@@ -1,0 +1,10 @@
+<h2>User Emails</h2>
+
+<ul>
+  <li *ngFor="let user of users$ | async">
+    {{ user.email }}
+  </li>
+</ul>
+
+<input [(ngModel)]="newEmail" placeholder="Enter email" />
+<button (click)="addUser()">Add User</button>
