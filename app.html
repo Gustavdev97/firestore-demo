@@ -1,10 +1,105 @@
-<h2>User Emails</h2>
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <span class="logo-icon">🧈</span>
+      <div class="logo-text">
+        Patriks <strong>Fettshop</strong>
+        <span class="logo-sub">Sveriges fetaste produkter</span>
+      </div>
+    </div>
+    <button class="cart-btn" (click)="toggleCart()">
+      <span class="cart-icon">🛒</span>
+      Varukorg
+      @if (cartCount() > 0) {
+        <span class="cart-badge">{{ cartCount() }}</span>
+      }
+    </button>
+  </div>
+</header>
 
-<ul>
-  <li *ngFor="let user of users$ | async">
-    {{ user.email }}
-  </li>
-</ul>
+<section class="hero">
+  <div class="container">
+    <h1>Välkommen till Patriks Fettshop!</h1>
+    <p>
+      Handgjort, naturligt och otroligt gott. Vi erbjuder de bästa och fetaste
+      produkterna på den svenska marknaden – direkt från gård till bord.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">🌿 Naturliga råvaror</span>
+      <span class="badge">🇸🇪 Svensk kvalitet</span>
+      <span class="badge">🚚 Fri frakt över 500 kr</span>
+    </div>
+  </div>
+</section>
 
-<input [(ngModel)]="newEmail" placeholder="Enter email" />
-<button (click)="addUser()">Add User</button>
+<main class="main">
+  <div class="container">
+    <h2 class="section-title">Våra Produkter</h2>
+    <div class="products-grid">
+      @for (product of products$ | async; track product.id) {
+        <article class="product-card">
+          <div class="product-emoji">{{ product.emoji }}</div>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-desc">{{ product.description }}</p>
+          <div class="product-footer">
+            <div class="price-group">
+              <span class="product-price">{{ product.price }} kr</span>
+              <span class="product-unit">/ {{ product.unit }}</span>
+            </div>
+            <button class="add-btn" (click)="addToCart(product)">
+              + Lägg i varukorg
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</main>
+
+@if (showCart()) {
+  <div class="overlay" (click)="toggleCart()"></div>
+  <aside class="cart-drawer">
+    <div class="cart-header">
+      <h2>Din Varukorg</h2>
+      <button class="close-btn" (click)="toggleCart()">✕</button>
+    </div>
+
+    @if (cart().length === 0) {
+      <div class="cart-empty">
+        <span class="cart-empty-icon">🛒</span>
+        <p>Din varukorg är tom</p>
+        <small>Lägg till något fett och gott!</small>
+      </div>
+    } @else {
+      <div class="cart-items">
+        @for (item of cart(); track item.product.id) {
+          <div class="cart-item">
+            <span class="cart-emoji">{{ item.product.emoji }}</span>
+            <div class="cart-info">
+              <p class="cart-name">{{ item.product.name }}</p>
+              <p class="cart-qty">{{ item.quantity }} st × {{ item.product.price }} kr</p>
+            </div>
+            <div class="cart-right">
+              <span class="cart-subtotal">{{ item.quantity * item.product.price }} kr</span>
+              <button class="remove-btn" (click)="removeFromCart(item.product.id)">✕</button>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Totalt</span>
+          <strong>{{ cartTotal() }} kr</strong>
+        </div>
+        <button class="checkout-btn">Gå till kassan →</button>
+      </div>
+    }
+  </aside>
+}
+
+<footer class="footer">
+  <div class="container">
+    <p>© 2026 Patriks Fettshop · Handgjort med kärlek 🧈</p>
+    <p class="footer-tagline">Fetast på marknaden – garanterat!</p>
+  </div>
+</footer>
